@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QMBOBO — Argentine Streetwear</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    :root {
+      --white: #FFFFFF; --off-white: #F2F0EB; --black: #0E0E0E;
+      --light-gray: #E8E5DF; --mid-gray: #9A9590;
+      --gold: #E8B320; --sky: #74AACE; --text-dark: #1A1A1A;
+      --norte-warm: #C4622D; --norte-deep: #7A2E0E;
+      --pampa-green: #4A7A35; --pampa-earth: #8B6B3D;
+      --patagonia-ice: #5B8FA8; --patagonia-stone: #3A4A55;
+    }
+    body { background: var(--off-white); color: var(--text-dark); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 20px 36px; transition: background 0.4s ease; }
+    nav.scrolled { background: rgba(14,14,14,0.94); backdrop-filter: blur(8px); }
+    .nav-logo { font-family: 'Anton', sans-serif; font-size: 1.6rem; letter-spacing: 0.05em; color: var(--white); text-decoration: none; }
+    .nav-right { display: flex; align-items: center; gap: 32px; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.25s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cart { position: relative; color: var(--white); font-size: 1.1rem; cursor: pointer; text-decoration: none; line-height: 1; }
+    .cart-count { position: absolute; top: -6px; right: -8px; background: var(--gold); color: var(--black); font-size: 0.6rem; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+
+    /* HERO */
+    .hero { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: flex-end; }
+    .hero-bg { position: absolute; inset: 0; background: linear-gradient(155deg,#3D2E1E 0%,#5C4128 20%,#7A5C38 35%,#6B7A4A 50%,#8A7A5A 65%,#4A3820 80%,#2A1E10 100%); }
+    .hero-street { position: absolute; inset: 0; background: radial-gradient(ellipse 120% 60% at 30% 85%, rgba(120,90,50,0.6) 0%, transparent 60%), radial-gradient(ellipse 80% 80% at 70% 30%, rgba(116,170,206,0.15) 0%, transparent 50%), linear-gradient(180deg, rgba(14,14,14,0.3) 0%, transparent 40%, rgba(14,14,14,0.65) 100%); }
+    .hero-cobble { position: absolute; bottom: 0; left: 0; right: 0; height: 35%; background: repeating-linear-gradient(88deg, transparent 0px, transparent 28px, rgba(0,0,0,0.08) 28px, rgba(0,0,0,0.08) 30px), repeating-linear-gradient(2deg, transparent 0px, transparent 14px, rgba(0,0,0,0.06) 14px, rgba(0,0,0,0.06) 15px); opacity: 0.5; }
+    .flag-stripe { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--sky) 33%, var(--white) 33%, var(--white) 66%, var(--sky) 66%); opacity: 0.8; z-index: 10; }
+    .hero-content { position: relative; z-index: 10; width: 100%; display: grid; grid-template-columns: 1fr 1fr; align-items: end; padding: 0 56px 80px; gap: 40px; }
+    .hero-tagline { font-family: 'Anton', sans-serif; font-size: clamp(3.5rem, 8vw, 8rem); color: var(--white); line-height: 0.9; letter-spacing: 0.01em; margin-bottom: 32px; opacity: 0; animation: heroIn 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; }
+    .hero-tagline .line2 { color: var(--gold); display: block; }
+    .hero-cta { display: inline-block; border: 2px solid var(--white); color: var(--white); font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 14px 36px; text-decoration: none; transition: background 0.3s, color 0.3s; opacity: 0; animation: heroIn 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s forwards; }
+    .hero-cta:hover { background: var(--white); color: var(--black); }
+    .hero-right { text-align: right; opacity: 0; animation: heroIn 0.9s cubic-bezier(0.16,1,0.3,1) 0.5s forwards; }
+    .hero-desc { font-size: clamp(0.95rem, 1.5vw, 1.15rem); font-weight: 300; line-height: 1.75; color: rgba(255,255,255,0.88); max-width: 480px; margin-left: auto; }
+    .sol-deco { position: absolute; top: 18%; right: 8%; width: clamp(100px, 14vw, 180px); opacity: 0.12; animation: rotateSlow 40s linear infinite; z-index: 5; }
+    @keyframes rotateSlow { to { transform: rotate(360deg); } }
+
+    /* TICKER */
+    .ticker-wrap { background: var(--black); overflow: hidden; padding: 12px 0; }
+    .ticker { display: flex; width: max-content; animation: tickerAnim 30s linear infinite; }
+    .ticker-item { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.2em; color: var(--white); padding: 0 40px; white-space: nowrap; }
+    .ticker-item .dot { color: var(--gold); margin: 0 12px; }
+    @keyframes tickerAnim { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ABOUT */
+    .about-strip { background: var(--white); padding: 80px 56px; display: grid; grid-template-columns: auto 1fr; gap: 80px; align-items: center; }
+    .about-label { font-family: 'Anton', sans-serif; font-size: clamp(2.5rem, 5vw, 5rem); line-height: 1; color: var(--black); white-space: nowrap; }
+    .about-label span { color: var(--gold); }
+    .about-text { font-size: 1.05rem; font-weight: 300; line-height: 1.85; color: #3A3A3A; max-width: 620px; }
+    .about-text strong { font-weight: 500; color: var(--black); }
+
+    /* PORTEÑO BAR */
+    .porteno-bar { background: var(--sky); overflow: hidden; }
+    .porteno-inner { display: flex; border-top: 1px solid rgba(255,255,255,0.2); }
+    .porteno-item { flex: 1; padding: 40px 28px; border-right: 1px solid rgba(255,255,255,0.2); text-align: center; transition: background 0.3s; cursor: default; }
+    .porteno-item:last-child { border-right: none; }
+    .porteno-item:hover { background: rgba(255,255,255,0.12); }
+    .porteno-icon { font-size: 1.8rem; margin-bottom: 10px; display: block; line-height: 1; }
+    .porteno-word { font-family: 'Anton', sans-serif; font-size: 1.1rem; letter-spacing: 0.05em; color: var(--white); display: block; margin-bottom: 6px; }
+    .porteno-def { font-size: 0.78rem; color: rgba(255,255,255,0.75); line-height: 1.55; }
+
+    /* REGIONS */
+    .region-header { padding: 80px 56px 40px; display: flex; justify-content: space-between; align-items: baseline; }
+    .region-title-main { font-family: 'Anton', sans-serif; font-size: clamp(2rem, 4vw, 3.5rem); color: var(--black); }
+    .region-subtitle { font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid-gray); }
+
+    /* NORTE */
+    .region-norte { display: grid; grid-template-columns: 1fr 1.6fr; min-height: 520px; overflow: hidden; }
+    .norte-visual { background: linear-gradient(160deg, #C4622D 0%, #8B3A1A 40%, #5A2010 100%); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 48px; }
+    .norte-visual::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 2px, transparent 2px, transparent 20px), repeating-linear-gradient(-45deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 2px, transparent 2px, transparent 20px); }
+    .norte-content { background: var(--off-white); padding: 56px 64px; display: flex; flex-direction: column; justify-content: center; }
+
+    /* PAMPA */
+    .region-pampa { display: grid; grid-template-columns: 1.6fr 1fr; min-height: 520px; overflow: hidden; }
+    .pampa-content { background: var(--black); padding: 56px 64px; display: flex; flex-direction: column; justify-content: center; }
+    .pampa-visual { background: linear-gradient(180deg, #87A05A 0%, #5A7A38 30%, #3A5A22 60%, #6B5A30 80%, #4A3A18 100%); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .pampa-visual::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0.2) 56%, transparent 56%), linear-gradient(180deg, transparent 62%, rgba(0,0,0,0.15) 62%, rgba(0,0,0,0.15) 63%, transparent 63%); }
+
+    /* PATAGONIA */
+    .region-patagonia { display: grid; grid-template-columns: 1fr 1.6fr; min-height: 520px; overflow: hidden; }
+    .patagonia-visual { background: linear-gradient(160deg, #8AAEC4 0%, #4A7A9B 30%, #2A4A60 60%, #1A2A35 100%); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .patagonia-visual::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(70deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 30px), repeating-linear-gradient(110deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 30px); }
+    .patagonia-content { background: #F8F7F4; padding: 56px 64px; display: flex; flex-direction: column; justify-content: center; }
+
+    /* Shared region content styles */
+    .region-eyebrow { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 16px; }
+    .norte-content .region-eyebrow { color: var(--norte-warm); }
+    .pampa-content .region-eyebrow { color: var(--gold); }
+    .patagonia-content .region-eyebrow { color: var(--patagonia-ice); }
+    .region-heading { font-family: 'Anton', sans-serif; font-size: clamp(1.8rem, 3vw, 2.8rem); line-height: 1.05; margin-bottom: 20px; color: var(--black); }
+    .pampa-content .region-heading { color: var(--white); }
+    .region-body { font-size: 0.97rem; font-weight: 300; line-height: 1.85; color: #4A4A4A; margin-bottom: 28px; max-width: 420px; }
+    .pampa-content .region-body { color: rgba(255,255,255,0.6); }
+    .region-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+    .tag { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; }
+    .tag-norte { border: 1px solid var(--norte-warm); color: var(--norte-warm); }
+    .tag-pampa { border: 1px solid var(--pampa-green); color: var(--pampa-green); }
+    .tag-pampa-dark { border: 1px solid rgba(74,122,53,0.5); color: rgba(100,180,70,0.8); }
+    .tag-patagonia { border: 1px solid var(--patagonia-ice); color: var(--patagonia-ice); }
+    .region-items-preview { display: flex; gap: 16px; }
+    .region-item-chip { background: var(--white); border: 1px solid var(--light-gray); padding: 10px 16px; font-size: 0.8rem; color: var(--mid-gray); display: flex; align-items: center; gap: 8px; }
+    .chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .visual-center-text { position: relative; z-index: 2; text-align: center; }
+    .visual-region-label { font-family: 'Anton', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); color: rgba(255,255,255,0.12); letter-spacing: 0.04em; line-height: 1; display: block; }
+    .visual-coord { font-size: 0.75rem; letter-spacing: 0.2em; color: rgba(255,255,255,0.35); display: block; margin-top: 8px; }
+
+    .region-divider { background: var(--black); padding: 24px 56px; display: flex; align-items: center; gap: 20px; }
+    .divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+    .divider-label { font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.25em; color: rgba(255,255,255,0.25); white-space: nowrap; }
+
+    /* PRODUCTS */
+    .products { padding: 100px 56px; background: var(--off-white); }
+    .products-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 56px; }
+    .products-title { font-family: 'Anton', sans-serif; font-size: clamp(2rem, 4vw, 3.5rem); color: var(--black); letter-spacing: 0.02em; }
+    .products-sub { font-size: 0.85rem; color: var(--mid-gray); letter-spacing: 0.1em; text-transform: uppercase; }
+    .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .product-card { background: var(--white); position: relative; overflow: hidden; transition: transform 0.35s ease; cursor: pointer; }
+    .product-card:hover { transform: translateY(-6px); }
+    .product-img-wrap { aspect-ratio: 1/1; background: var(--light-gray); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .cap-svg-wrap { width: 80%; max-width: 300px; transition: transform 0.5s cubic-bezier(0.23,1,0.32,1); }
+    .product-card:hover .cap-svg-wrap { transform: scale(1.06) rotate(-3deg); }
+    .product-tag { position: absolute; top: 16px; left: 16px; background: var(--gold); color: var(--black); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; }
+    .product-info { padding: 20px 24px 24px; border-top: 1px solid var(--light-gray); }
+    .product-name { font-size: 1rem; font-weight: 500; color: var(--black); margin-bottom: 4px; }
+    .product-variant { font-size: 0.8rem; color: var(--mid-gray); margin-bottom: 14px; }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-family: 'Anton', sans-serif; font-size: 1.3rem; letter-spacing: 0.03em; color: var(--black); }
+    .add-btn { background: var(--black); color: var(--white); border: none; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 9px 18px; cursor: pointer; transition: background 0.25s; }
+    .add-btn:hover { background: var(--gold); color: var(--black); }
+    .product-card.coming-soon { opacity: 0.5; }
+    .product-card.coming-soon .product-img-wrap { background: #DEDAD4; }
+    .coming-soon-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 14px; padding: 40px; }
+    .coming-soon-icon { width: 60px; height: 60px; border: 2px dashed #BFBAB2; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #BFBAB2; font-size: 1.4rem; }
+    .coming-soon-text { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: #BFBAB2; }
+
+    /* MATE SECTION */
+    .mate-section { background: var(--black); padding: 100px 56px; position: relative; overflow: hidden; }
+    .mate-section::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 60px, rgba(232,179,32,0.02) 60px, rgba(232,179,32,0.02) 61px); }
+    .mate-inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .mate-eyebrow { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+    .mate-heading { font-family: 'Anton', sans-serif; font-size: clamp(2.5rem, 5vw, 5rem); color: var(--white); line-height: 0.95; margin-bottom: 24px; }
+    .mate-body { font-size: 1rem; font-weight: 300; line-height: 1.85; color: rgba(255,255,255,0.55); max-width: 400px; }
+    .ritual-item { display: flex; align-items: flex-start; gap: 20px; padding: 22px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .ritual-item:first-child { border-top: 1px solid rgba(255,255,255,0.07); }
+    .ritual-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: rgba(255,255,255,0.1); line-height: 1; min-width: 36px; }
+    .ritual-title { font-family: 'Anton', sans-serif; font-size: 1rem; letter-spacing: 0.05em; color: var(--white); margin-bottom: 4px; }
+    .ritual-desc { font-size: 0.85rem; color: rgba(255,255,255,0.4); line-height: 1.6; }
+
+    /* PHRASES */
+    .phrases-strip { background: var(--gold); padding: 56px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+    .phrase-item { text-align: center; }
+    .phrase-word { font-family: 'Anton', sans-serif; font-size: 1.6rem; letter-spacing: 0.02em; color: var(--black); display: block; margin-bottom: 8px; }
+    .phrase-meaning { font-size: 0.8rem; font-style: italic; color: rgba(14,14,14,0.6); line-height: 1.55; }
+
+    /* CULTURE */
+    .culture { display: grid; grid-template-columns: 1fr 1fr; }
+    .culture-visual { position: relative; min-height: 520px; background: linear-gradient(135deg, #1A2A3A 0%, #0E1A28 100%); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .culture-flag-bands { position: absolute; inset: 0; display: flex; flex-direction: column; }
+    .flag-band { flex: 1; }
+    .flag-band-1 { background: rgba(116,170,206,0.35); }
+    .flag-band-2 { background: rgba(255,255,255,0.08); }
+    .flag-band-3 { background: rgba(116,170,206,0.35); }
+    .culture-sol { position: relative; z-index: 2; }
+    .culture-text { background: var(--black); color: var(--white); padding: 80px 64px; display: flex; flex-direction: column; justify-content: center; }
+    .culture-eyebrow { font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+    .culture-heading { font-family: 'Anton', sans-serif; font-size: clamp(2rem, 4vw, 3.8rem); line-height: 1.0; margin-bottom: 24px; }
+    .culture-body { font-size: 1rem; font-weight: 300; line-height: 1.85; color: rgba(255,255,255,0.65); margin-bottom: 36px; max-width: 400px; }
+    .culture-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+    .pill { border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 7px 16px; border-radius: 100px; }
+
+    /* NEWSLETTER */
+    .newsletter { background: var(--sky); padding: 80px 56px; text-align: center; }
+    .newsletter h2 { font-family: 'Anton', sans-serif; font-size: clamp(2rem, 4vw, 3.5rem); color: var(--white); margin-bottom: 12px; }
+    .newsletter p { font-size: 1rem; color: rgba(255,255,255,0.8); margin-bottom: 32px; }
+    .newsletter-form { display: flex; max-width: 440px; margin: 0 auto; }
+    .newsletter-input { flex: 1; border: none; border-bottom: 2px solid var(--white); background: transparent; color: var(--white); font-size: 0.95rem; padding: 12px 0; outline: none; }
+    .newsletter-input::placeholder { color: rgba(255,255,255,0.55); }
+    .newsletter-submit { background: var(--white); color: var(--sky); border: none; font-family: 'Anton', sans-serif; font-size: 0.9rem; letter-spacing: 0.1em; padding: 12px 28px; cursor: pointer; margin-left: 16px; transition: background 0.25s, color 0.25s; }
+    .newsletter-submit:hover { background: var(--black); color: var(--white); }
+
+    /* FOOTER */
+    footer { background: var(--black); color: var(--white); padding: 60px 56px 32px; }
+    .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; flex-wrap: wrap; gap: 40px; }
+    .footer-logo { font-family: 'Anton', sans-serif; font-size: 2rem; color: var(--white); letter-spacing: 0.05em; display: block; margin-bottom: 10px; }
+    .footer-tagline-small { font-size: 0.85rem; font-style: italic; color: rgba(255,255,255,0.4); }
+    .footer-cols { display: flex; gap: 60px; }
+    .footer-col h4 { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 8px; }
+    .footer-col ul li a { font-size: 0.9rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.25s; }
+    .footer-col ul li a:hover { color: var(--white); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: rgba(255,255,255,0.3); flex-wrap: wrap; gap: 12px; }
+    .footer-socials { display: flex; gap: 20px; }
+    .footer-socials a { color: rgba(255,255,255,0.4); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: color 0.25s; }
+    .footer-socials a:hover { color: var(--gold); }
+
+    /* ANIMATIONS */
+    @keyframes heroIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-stagger > * { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal-stagger.visible > *:nth-child(1) { opacity:1; transform:translateY(0); transition-delay:0s; }
+    .reveal-stagger.visible > *:nth-child(2) { opacity:1; transform:translateY(0); transition-delay:0.12s; }
+    .reveal-stagger.visible > *:nth-child(3) { opacity:1; transform:translateY(0); transition-delay:0.24s; }
+  </style>
+</head>
+<body>
+
+  <nav id="nav">
+    <a href="/" class="nav-logo">QMBOBO</a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#regions">Colecciones</a></li>
+        <li><a href="https://qmbobo.mycommerce.shop/">Shop</a></li>
+        <li><a href="#culture">Nosotros</a></li>
+        <li><a href="#newsletter">Contacto</a></li>
+      </ul>
+      <a href="https://qmbobo.mycommerce.shop/" class="nav-cart">🛒<span class="cart-count">0</span></a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="flag-stripe"></div>
+    <div class="hero-bg"></div>
+    <div class="hero-street"></div>
+    <div class="hero-cobble"></div>
+    <svg class="sol-deco" viewBox="0 0 200 200" fill="none">
+      <circle cx="100" cy="100" r="38" fill="white"/>
+      <circle cx="88" cy="95" r="4" fill="#E8B320"/><circle cx="112" cy="95" r="4" fill="#E8B320"/>
+      <path d="M88 112 Q100 122 112 112" stroke="#E8B320" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <g stroke="white" stroke-width="4" stroke-linecap="round">
+        <line x1="100" y1="10" x2="100" y2="48"/><line x1="100" y1="152" x2="100" y2="190"/>
+        <line x1="10" y1="100" x2="48" y2="100"/><line x1="152" y1="100" x2="190" y2="100"/>
+        <line x1="37" y1="37" x2="62" y2="62"/><line x1="138" y1="138" x2="163" y2="163"/>
+        <line x1="163" y1="37" x2="138" y2="62"/><line x1="37" y1="163" x2="62" y2="138"/>
+      </g>
+      <g stroke="white" stroke-width="3" stroke-linecap="round" fill="none">
+        <path d="M22 63 Q30 55 38 63 Q46 71 54 63"/><path d="M146 63 Q154 55 162 63 Q170 71 178 63"/>
+        <path d="M22 137 Q30 129 38 137 Q46 145 54 137"/><path d="M146 137 Q154 129 162 137 Q170 145 178 137"/>
+        <path d="M63 22 Q55 30 63 38 Q71 46 63 54"/><path d="M137 22 Q129 30 137 38 Q145 46 137 54"/>
+        <path d="M63 146 Q55 154 63 162 Q71 170 63 178"/><path d="M137 146 Q129 154 137 162 Q145 170 137 178"/>
+      </g>
+    </svg>
+    <div class="hero-content">
+      <div class="hero-left">
+        <h1 class="hero-tagline">Que mirás<span class="line2">bobo?</span></h1>
+        <a href="https://qmbobo.mycommerce.shop/" class="hero-cta">See Products</a>
+      </div>
+      <div class="hero-right">
+        <p class="hero-desc">A comfortable, everyday streetwear brand inspired by Argentine history and culture. Each piece blends urban style with cultural identity through clean, contemporary graphics. Created by Francesca, an Argentine living in Switzerland, the brand was born as a bridge between worlds, merging South America and Europe into an authentic, borderless streetwear vision designed for everyday wear.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span class="ticker-item">Que mirás bobo<span class="dot">✦</span></span>
+      <span class="ticker-item">Dale que va<span class="dot">✦</span></span>
+      <span class="ticker-item">Norte · Pampa · Patagonia<span class="dot">✦</span></span>
+      <span class="ticker-item">100% Algodón Orgánico<span class="dot">✦</span></span>
+      <span class="ticker-item">Buenos Aires · Zurich<span class="dot">✦</span></span>
+      <span class="ticker-item">Re copado<span class="dot">✦</span></span>
+      <span class="ticker-item">Hecho con amor<span class="dot">✦</span></span>
+      <span class="ticker-item">Que mirás bobo<span class="dot">✦</span></span>
+      <span class="ticker-item">Dale que va<span class="dot">✦</span></span>
+      <span class="ticker-item">Norte · Pampa · Patagonia<span class="dot">✦</span></span>
+      <span class="ticker-item">100% Algodón Orgánico<span class="dot">✦</span></span>
+      <span class="ticker-item">Buenos Aires · Zurich<span class="dot">✦</span></span>
+      <span class="ticker-item">Re copado<span class="dot">✦</span></span>
+      <span class="ticker-item">Hecho con amor<span class="dot">✦</span></span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="about-strip reveal">
+    <div class="about-label">Made<br>with <span>❤</span><br>from BA</div>
+    <p class="about-text">QMBOBO is more than a brand — it's a feeling. The feeling of <strong>Buenos Aires in your bones</strong>, of mate at 7am, of cumbia on a Sunday, of cobblestones under your feet. Francesca built this as a bridge: between continents, between cultures, between who she was and who she is. Every piece carries that energy — <strong>bold, honest, and unapologetically Argentine.</strong></p>
+  </div>
+
+  <!-- PORTEÑO DICTIONARY -->
+  <div class="porteno-bar reveal">
+    <div class="porteno-inner">
+      <div class="porteno-item">
+        <span class="porteno-icon">🧉</span>
+        <span class="porteno-word">MATE</span>
+        <span class="porteno-def">Not just a drink. A ritual, a hug, a philosophy. You share it or you don't belong.</span>
+      </div>
+      <div class="porteno-item">
+        <span class="porteno-icon">🎶</span>
+        <span class="porteno-word">QUILOMBO</span>
+        <span class="porteno-def">Beautiful chaos. The good kind. Buenos Aires on any given Friday night.</span>
+      </div>
+      <div class="porteno-item">
+        <span class="porteno-icon">⚽</span>
+        <span class="porteno-word">PIBE</span>
+        <span class="porteno-def">The kid. The one with the ball, the street, the whole world ahead of him.</span>
+      </div>
+      <div class="porteno-item">
+        <span class="porteno-icon">🏙️</span>
+        <span class="porteno-word">PORTEÑO</span>
+        <span class="porteno-def">Born in the port city. Walks fast, talks loud, eats late, loves deep.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGIONAL COLLECTIONS -->
+  <section id="regions">
+    <div class="region-header reveal">
+      <h2 class="region-title-main">THREE REGIONS.<br>ONE ARGENTINA.</h2>
+      <span class="region-subtitle">Colecciones por región</span>
+    </div>
+
+    <!-- NORTE -->
+    <div class="region-norte reveal">
+      <div class="norte-visual">
+        <div class="visual-center-text">
+          <span class="visual-region-label">NORTE</span>
+          <span class="visual-coord">22°S — 65°W</span>
+          <!-- Chakana / Andean cross -->
+          <svg width="110" height="110" viewBox="0 0 110 110" fill="none" style="display:block;margin:20px auto 0;opacity:0.45">
+            <rect x="37" y="0" width="36" height="110" fill="rgba(255,255,255,0.2)"/>
+            <rect x="0" y="37" width="110" height="36" fill="rgba(255,255,255,0.2)"/>
+            <rect x="49" y="12" width="12" height="12" fill="rgba(255,220,100,0.4)"/>
+            <rect x="86" y="49" width="12" height="12" fill="rgba(255,220,100,0.4)"/>
+            <rect x="49" y="86" width="12" height="12" fill="rgba(255,220,100,0.4)"/>
+            <rect x="12" y="49" width="12" height="12" fill="rgba(255,220,100,0.4)"/>
+          </svg>
+        </div>
+      </div>
+      <div class="norte-content">
+        <div class="region-eyebrow">Sección Norte — Colección I</div>
+        <h3 class="region-heading">TIERRA COLORADA.<br>CIELO INFINITO.</h3>
+        <p class="region-body">From the Quebrada de Humahuaca to the Salinas Grandes — the north is raw color, ancient rock, and Andean spirit. Think terracotta, rust, ochre. The palette of Jujuy baked into every stitch. This collection channels the indigenous heritage of the Puna: bold geometry, earthy warmth, and patterns that have existed for thousands of years.</p>
+        <div class="region-tags">
+          <span class="tag tag-norte">Jujuy</span>
+          <span class="tag tag-norte">Salta</span>
+          <span class="tag tag-norte">Puna</span>
+          <span class="tag tag-norte">Quebrada</span>
+          <span class="tag tag-norte">Terracotta</span>
+        </div>
+        <div class="region-items-preview">
+          <div class="region-item-chip"><span class="chip-dot" style="background:var(--norte-warm)"></span>Coming 2026</div>
+          <div class="region-item-chip"><span class="chip-dot" style="background:#C8A860"></span>Avisame</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="region-divider">
+      <div class="divider-line"></div>
+      <div class="divider-label">✦ &nbsp; Argentina de Norte a Sur &nbsp; ✦</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- PAMPA -->
+    <div class="region-pampa reveal">
+      <div class="pampa-content">
+        <div class="region-eyebrow">Sección Pampa — Colección II</div>
+        <h3 class="region-heading">HORIZONTE SIN FIN.<br>GAUCHO FOREVER.</h3>
+        <p class="region-body">The flat, endless Pampa Húmeda. Asado smoke on the horizon. The estancia, the horse, the facón. This is the Argentina of legend — of Martín Fierro and Sunday afternoon. Olives, browns, and the deep green of alfalfa fields stretching further than the eye can see.</p>
+        <div class="region-tags">
+          <span class="tag tag-pampa-dark">Buenos Aires</span>
+          <span class="tag tag-pampa-dark">Santa Fe</span>
+          <span class="tag tag-pampa-dark">Entre Ríos</span>
+          <span class="tag tag-pampa-dark">Gaucho</span>
+          <span class="tag tag-pampa-dark">Asado</span>
+        </div>
+        <div class="region-items-preview">
+          <div class="region-item-chip" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.15)"><span class="chip-dot" style="background:var(--pampa-green)"></span><span style="color:rgba(255,255,255,0.5)">Coming 2026</span></div>
+          <div class="region-item-chip" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.15)"><span class="chip-dot" style="background:var(--pampa-earth)"></span><span style="color:rgba(255,255,255,0.5)">Avisame</span></div>
+        </div>
+      </div>
+      <div class="pampa-visual">
+        <div class="visual-center-text">
+          <span class="visual-region-label">PAMPA</span>
+          <span class="visual-coord">34°S — 60°W</span>
+          <!-- Stylized asado / fire -->
+          <svg width="80" height="90" viewBox="0 0 80 90" fill="none" style="display:block;margin:20px auto 0;opacity:0.45">
+            <ellipse cx="40" cy="78" rx="26" ry="6" fill="rgba(255,255,255,0.2)"/>
+            <rect x="18" y="44" width="7" height="36" rx="3.5" fill="rgba(255,255,255,0.3)"/>
+            <rect x="36" y="38" width="7" height="42" rx="3.5" fill="rgba(255,255,255,0.3)"/>
+            <rect x="54" y="44" width="7" height="36" rx="3.5" fill="rgba(255,255,255,0.3)"/>
+            <path d="M12 44 Q40 26 68 44" stroke="rgba(255,255,255,0.35)" stroke-width="2" fill="none"/>
+            <path d="M34 22 Q40 8 37 2 Q44 10 40 22" fill="rgba(232,179,32,0.45)"/>
+            <path d="M28 28 Q33 16 31 10 Q37 18 33 28" fill="rgba(255,255,255,0.25)"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="region-divider">
+      <div class="divider-line"></div>
+      <div class="divider-label">✦ &nbsp; Del calor al frío eterno &nbsp; ✦</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- PATAGONIA -->
+    <div class="region-patagonia reveal">
+      <div class="patagonia-visual">
+        <div class="visual-center-text">
+          <span class="visual-region-label">PATAGONIA</span>
+          <span class="visual-coord">50°S — 72°W</span>
+          <!-- Mountains / Fitz Roy silhouette -->
+          <svg width="160" height="90" viewBox="0 0 160 90" fill="none" style="display:block;margin:16px auto 0;opacity:0.5">
+            <polygon points="80,6 110,66 50,66" fill="rgba(255,255,255,0.22)"/>
+            <polygon points="30,18 58,66 2,66" fill="rgba(255,255,255,0.14)"/>
+            <polygon points="130,22 158,66 102,66" fill="rgba(255,255,255,0.14)"/>
+            <rect x="0" y="66" width="160" height="24" fill="rgba(91,143,168,0.28)"/>
+            <polygon points="80,6 93,32 67,32" fill="rgba(255,255,255,0.5)"/>
+            <polygon points="30,18 40,38 20,38" fill="rgba(255,255,255,0.3)"/>
+            <polygon points="130,22 140,40 120,40" fill="rgba(255,255,255,0.3)"/>
+          </svg>
+        </div>
+      </div>
+      <div class="patagonia-content">
+        <div class="region-eyebrow">Sección Patagonia — Colección III</div>
+        <h3 class="region-heading">VIENTO, HIELO<br>Y LIBERTAD.</h3>
+        <p class="region-body">The end of the world, but the beginning of everything. Perito Moreno cracking. The Fitz Roy at dawn. Patagonia is where Argentina becomes elemental — ice blue, slate, the deep teal of a glacial lake. These pieces are built for people who go there, not just dream about it. Raw, windswept, and quietly magnificent.</p>
+        <div class="region-tags">
+          <span class="tag tag-patagonia">Bariloche</span>
+          <span class="tag tag-patagonia">El Calafate</span>
+          <span class="tag tag-patagonia">Fitz Roy</span>
+          <span class="tag tag-patagonia">Ushuaia</span>
+          <span class="tag tag-patagonia">Glaciar</span>
+        </div>
+        <div class="region-items-preview">
+          <div class="region-item-chip"><span class="chip-dot" style="background:var(--patagonia-ice)"></span>Coming 2026</div>
+          <div class="region-item-chip"><span class="chip-dot" style="background:var(--patagonia-stone)"></span>Avisame</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="products" id="products">
+    <div class="products-header reveal">
+      <h2 class="products-title">THE DROP</h2>
+      <span class="products-sub">Disponible ahora</span>
+    </div>
+    <div class="products-grid reveal-stagger">
+      <div class="product-card" onclick="addToCart(this)">
+        <div class="product-img-wrap">
+          <div class="cap-svg-wrap">
+            <svg viewBox="0 0 400 320" fill="none">
+              <ellipse cx="200" cy="210" rx="190" ry="70" fill="#D6D0C4"/>
+              <path d="M60 210 Q80 100 200 80 Q320 100 340 210 Z" fill="#E2DDD4"/>
+              <path d="M200 82 L200 210" stroke="#C8C2B6" stroke-width="1.5" opacity="0.6"/>
+              <path d="M140 88 Q150 150 160 210" stroke="#C8C2B6" stroke-width="1" opacity="0.4"/>
+              <path d="M260 88 Q250 150 240 210" stroke="#C8C2B6" stroke-width="1" opacity="0.4"/>
+              <path d="M50 222 Q200 290 350 222 L340 210 Q200 275 60 210 Z" fill="#CAC5B8"/>
+              <path d="M50 222 Q200 290 350 222" stroke="#B8B2A6" stroke-width="1.5" fill="none"/>
+              <circle cx="200" cy="84" r="7" fill="#C8C2B6"/><circle cx="200" cy="84" r="4" fill="#B8B2A6"/>
+              <circle cx="162" cy="122" r="3" fill="white" opacity="0.7"/><circle cx="238" cy="122" r="3" fill="white" opacity="0.7"/>
+              <path d="M72 216 Q200 268 328 216" stroke="#B8B2A6" stroke-width="2" fill="none" opacity="0.5"/>
+              <g transform="translate(200,155) scale(0.48)">
+                <circle cx="0" cy="0" r="28" fill="#E8B320"/><circle cx="0" cy="0" r="22" fill="#F5C832"/>
+                <ellipse cx="-8" cy="-4" rx="4" ry="5" fill="#C89010"/><ellipse cx="8" cy="-4" rx="4" ry="5" fill="#C89010"/>
+                <path d="M-8 8 Q0 14 8 8" stroke="#C89010" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <ellipse cx="0" cy="3" rx="2" ry="3" fill="#C89010" opacity="0.6"/>
+                <g stroke="#E8B320" stroke-width="4" stroke-linecap="round">
+                  <line x1="0" y1="-32" x2="0" y2="-50"/><line x1="0" y1="32" x2="0" y2="50"/>
+                  <line x1="-32" y1="0" x2="-50" y2="0"/><line x1="32" y1="0" x2="50" y2="0"/>
+                  <line x1="-22" y1="-22" x2="-36" y2="-36"/><line x1="22" y1="-22" x2="36" y2="-36"/>
+                  <line x1="-22" y1="22" x2="-36" y2="36"/><line x1="22" y1="22" x2="36" y2="36"/>
+                </g>
+                <g stroke="#E8B320" stroke-width="3" fill="none" stroke-linecap="round">
+                  <path d="M-16 -30 Q-12 -36 -8 -30 Q-4 -24 0 -30"/><path d="M8 -30 Q12 -36 16 -30"/>
+                  <path d="M-16 30 Q-12 24 -8 30 Q-4 36 0 30"/><path d="M8 30 Q12 24 16 30"/>
+                  <path d="M-30 -16 Q-36 -12 -30 -8 Q-24 -4 -30 0"/><path d="M30 -16 Q36 -12 30 -8 Q24 -4 30 0"/>
+                </g>
+              </g>
+              <rect x="170" y="272" width="60" height="12" rx="6" fill="#BAB4A8"/>
+              <rect x="188" y="268" width="24" height="20" rx="3" fill="#C8C2B6"/>
+            </svg>
+          </div>
+          <div class="product-tag">In Stock</div>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Aura Cap</div>
+          <div class="product-variant">Sol de Mayo · 100% Organic Cotton</div>
+          <div class="product-footer">
+            <div class="product-price">CHF 24.95</div>
+            <button class="add-btn">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card coming-soon">
+        <div class="product-img-wrap">
+          <div class="coming-soon-inner">
+            <div class="coming-soon-icon">＋</div>
+            <div class="coming-soon-text">Próximamente</div>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-name" style="color:#BFBAB2">Colección Norte</div>
+          <div class="product-variant">Dropping 2026</div>
+          <div class="product-footer">
+            <div class="product-price" style="color:#BFBAB2">— —</div>
+            <button class="add-btn" style="background:#DEDAD4;color:#BFBAB2;pointer-events:none">Avisame</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card coming-soon">
+        <div class="product-img-wrap">
+          <div class="coming-soon-inner">
+            <div class="coming-soon-icon">＋</div>
+            <div class="coming-soon-text">Próximamente</div>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-name" style="color:#BFBAB2">Colección Pampa</div>
+          <div class="product-variant">Dropping 2026</div>
+          <div class="product-footer">
+            <div class="product-price" style="color:#BFBAB2">— —</div>
+            <button class="add-btn" style="background:#DEDAD4;color:#BFBAB2;pointer-events:none">Avisame</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATE / RITUAL SECTION -->
+  <section class="mate-section reveal">
+    <div class="mate-inner">
+      <div class="mate-left">
+        <div class="mate-eyebrow">— La cultura que nos une</div>
+        <h2 class="mate-heading">EL RITUAL<br>ARGENTINO</h2>
+        <p class="mate-body">There are things you only understand if you're from there. The way a game of truco can last three hours. The way everyone slows down at asado time. The way a stranger offers you mate and suddenly you're family. QMBOBO wears that culture on its sleeve — literally.</p>
+      </div>
+      <div class="mate-rituals">
+        <div class="ritual-item">
+          <div class="ritual-num">01</div>
+          <div>
+            <div class="ritual-title">🧉 EL MATE</div>
+            <div class="ritual-desc">Shared counterclockwise. Never stirred. Always hot. If you blow on it, you're not invited back.</div>
+          </div>
+        </div>
+        <div class="ritual-item">
+          <div class="ritual-num">02</div>
+          <div>
+            <div class="ritual-title">🥩 EL ASADO</div>
+            <div class="ritual-desc">Not a barbecue. A ceremony. The asador is a priest and the parrilla is the altar. It takes as long as it takes.</div>
+          </div>
+        </div>
+        <div class="ritual-item">
+          <div class="ritual-num">03</div>
+          <div>
+            <div class="ritual-title">⚽ EL FÚTBOL</div>
+            <div class="ritual-desc">Religion with a ball. Sunday stops. The whole block holds its breath. Maradona is still alive in every corner.</div>
+          </div>
+        </div>
+        <div class="ritual-item">
+          <div class="ritual-num">04</div>
+          <div>
+            <div class="ritual-title">💃 EL TANGO</div>
+            <div class="ritual-desc">Born in the conventillos of La Boca. Not for tourists — for lovers, for the lonely, for 2am in San Telmo.</div>
+          </div>
+        </div>
+        <div class="ritual-item">
+          <div class="ritual-num">05</div>
+          <div>
+            <div class="ritual-title">🏙️ LA NOCHE PORTEÑA</div>
+            <div class="ritual-desc">Dinner at 10pm. Club at 2am. Palermo buzzing at sunrise. Buenos Aires never really sleeps.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLANG STRIP -->
+  <div class="phrases-strip reveal">
+    <div class="phrase-item">
+      <span class="phrase-word">COPADO</span>
+      <span class="phrase-meaning">"Cool." The highest compliment. Used for people, places, and this brand.</span>
+    </div>
+    <div class="phrase-item">
+      <span class="phrase-word">BERRETA</span>
+      <span class="phrase-meaning">"Cheap & bad." The opposite of QMBOBO. We're the anti-berreta.</span>
+    </div>
+    <div class="phrase-item">
+      <span class="phrase-word">PIOLA</span>
+      <span class="phrase-meaning">"Clever, smooth, subtle." The vibe of every piece we make.</span>
+    </div>
+    <div class="phrase-item">
+      <span class="phrase-word">FIACA</span>
+      <span class="phrase-meaning">"That lazy Sunday feeling." The reason our fits need to be comfortable.</span>
+    </div>
+  </div>
+
+  <!-- CULTURE -->
+  <section class="culture" id="culture">
+    <div class="culture-visual">
+      <div class="culture-flag-bands">
+        <div class="flag-band flag-band-1"></div>
+        <div class="flag-band flag-band-2"></div>
+        <div class="flag-band flag-band-3"></div>
+      </div>
+      <svg class="culture-sol" width="260" height="260" viewBox="0 0 200 200" fill="none">
+        <circle cx="100" cy="100" r="42" fill="rgba(255,255,255,0.9)"/>
+        <circle cx="86" cy="95" r="5" fill="#1A2A3A"/><circle cx="114" cy="95" r="5" fill="#1A2A3A"/>
+        <path d="M86 115 Q100 128 114 115" stroke="#1A2A3A" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="100" cy="106" rx="2" ry="3" fill="#1A2A3A" opacity="0.5"/>
+        <g stroke="rgba(255,255,255,0.85)" stroke-width="5" stroke-linecap="round">
+          <line x1="100" y1="8" x2="100" y2="44"/><line x1="100" y1="156" x2="100" y2="192"/>
+          <line x1="8" y1="100" x2="44" y2="100"/><line x1="156" y1="100" x2="192" y2="100"/>
+          <line x1="34" y1="34" x2="58" y2="58"/><line x1="142" y1="142" x2="166" y2="166"/>
+          <line x1="166" y1="34" x2="142" y2="58"/><line x1="34" y1="166" x2="58" y2="142"/>
+        </g>
+        <g stroke="rgba(255,255,255,0.7)" stroke-width="4" fill="none" stroke-linecap="round">
+          <path d="M20 65 Q28 55 36 65 Q44 75 52 65"/><path d="M148 65 Q156 55 164 65 Q172 75 180 65"/>
+          <path d="M20 135 Q28 125 36 135 Q44 145 52 135"/><path d="M148 135 Q156 125 164 135 Q172 145 180 135"/>
+          <path d="M65 20 Q55 28 65 36 Q75 44 65 52"/><path d="M135 20 Q125 28 135 36 Q145 44 135 52"/>
+          <path d="M65 148 Q55 156 65 164 Q75 172 65 180"/><path d="M135 148 Q125 156 135 164 Q145 172 135 180"/>
+        </g>
+      </svg>
+    </div>
+    <div class="culture-text reveal">
+      <div class="culture-eyebrow">— Where it comes from</div>
+      <h2 class="culture-heading">DOS MUNDOS.<br>UNA VOZ.</h2>
+      <p class="culture-body">Born in Buenos Aires, built in Switzerland. QMBOBO is Francesca's way of carrying her culture with her — proudly, loudly, every single day. The name? A famous phrase from a viral moment that became a symbol of Argentine pride and defiance. We wear it like a badge.</p>
+      <div class="culture-pills">
+        <span class="pill">Raíces Argentinas</span>
+        <span class="pill">Swiss Precision</span>
+        <span class="pill">Algodón Orgánico</span>
+        <span class="pill">San Telmo Soul</span>
+        <span class="pill">Palermo Energy</span>
+        <span class="pill">La Boca Color</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter" id="newsletter">
+    <h2 class="reveal">ENTERATE PRIMERO.</h2>
+    <p class="reveal">Nuevos drops, detalles del proceso, y pura energía argentina — directo a tu mail.</p>
+    <div class="newsletter-form reveal">
+      <input class="newsletter-input" type="email" placeholder="tu@email.com"/>
+      <button class="newsletter-submit">SUMATE</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <span class="footer-logo">QMBOBO</span>
+        <p class="footer-tagline-small">Buenos Aires · Zurich · En todas partes</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Colecciones</h4>
+          <ul>
+            <li><a href="https://qmbobo.mycommerce.shop/">Aura Cap</a></li>
+            <li><a href="https://qmbobo.mycommerce.shop/">Norte →</a></li>
+            <li><a href="https://qmbobo.mycommerce.shop/">Pampa →</a></li>
+            <li><a href="https://qmbobo.mycommerce.shop/">Patagonia →</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Marca</h4>
+          <ul>
+            <li><a href="https://qmbobo.mycommerce.shop/">Nuestra historia</a></li>
+            <li><a href="https://qmbobo.mycommerce.shop/">Sobre Francesca</a></li>
+            <li><a href="https://qmbobo.mycommerce.shop/">Prensa</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Ayuda</h4>
+          <ul>
+            <li><a href="https://qmbobo.mycommerce.shop/">Envíos</a></li>
+            <li><a href="https://qmbobo.mycommerce.shop/">Devoluciones</a></li>
+            <li><a href="#newsletter">Contacto</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 QMBOBO — Hecho con amor desde Buenos Aires 🇦🇷</span>
+      <div class="footer-socials">
+        <a href="https://qmbobo.mycommerce.shop/">Instagram</a>
+        <a href="https://qmbobo.mycommerce.shop/">TikTok</a>
+        <a href="https://qmbobo.mycommerce.shop/">WhatsApp</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 60); });
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => obs.observe(el));
+    let count = 0;
+    const cartCount = document.querySelector('.cart-count');
+    function addToCart(card) {
+      if (card.classList.contains('coming-soon')) return;
+      count++;
+      cartCount.textContent = count;
+      cartCount.style.transform = 'scale(1.4)';
+      setTimeout(() => cartCount.style.transform = 'scale(1)', 300);
+    }
+  </script>
+</body>
+</html>
